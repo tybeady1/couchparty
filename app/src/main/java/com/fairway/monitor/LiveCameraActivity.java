@@ -210,6 +210,11 @@ public class LiveCameraActivity extends Activity {
     add(
         controls,
         button(
+            "Experimental marked-ball spin",
+            () -> startActivity(new Intent(this, SpinActivity.class))));
+    add(
+        controls,
+        button(
             "Restart / enable camera",
             () -> {
               if (checkSelfPermission(Manifest.permission.CAMERA)

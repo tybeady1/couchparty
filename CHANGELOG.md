@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.0 (build 6)
+
+- Add capability-gated Camera2 high-speed capture and marked-ball spin review.
+- Record a two-second burst and analyze one red dot on a white ball.
+- Report apparent axis-aligned rotation only, separate from simulator spin data.
+
 ## 1.4.0 (build 5)
 
 - Pair captured swings with reference ball speed and vertical launch angle.
