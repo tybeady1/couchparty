@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0 (build 3)
+
+- Show an automatic results screen after a practice putt: camera-relative heading, observed trace, speed, observed distance and track details.
+- Return to the camera with Next putt; game inputs continue straight to the game.
+- Label observed distance separately from unmeasured full rollout; save observed distance with live history.
+
 ## 1.1.0 (build 2)
 
 - Added app version display, manual update checks, APK download and Android installer handoff.

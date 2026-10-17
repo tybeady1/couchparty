@@ -374,6 +374,14 @@ public class LiveCameraActivity extends Activity {
                 : "Visible launch angle",
             reading.angle,
             reading.path.size());
+    if (reading.mode == LiveShotDetector.Mode.PUTT) {
+      report +=
+          String.format(
+              Locale.US,
+              "\nObserved distance: %.2f m / %.2f ft\nFull rollout: not measured",
+              reading.observedDistance,
+              reading.observedDistance * 3.28084);
+    }
     result.setText(report);
     try {
       JSONObject j = new JSONObject();
@@ -382,6 +390,8 @@ public class LiveCameraActivity extends Activity {
       j.put("ballType", type.label);
       j.put("speed_mps", reading.speed);
       j.put("angle_deg", reading.angle);
+      j.put("observed_distance_m", reading.observedDistance);
+      j.put("fit", reading.fit);
       j.put("frame_width_m", width);
       j.put("points", reading.path.size());
       j.put("report", report);
@@ -402,6 +412,13 @@ public class LiveCameraActivity extends Activity {
       data.putExtra("ballType", type.label);
       setResult(RESULT_OK, data);
       finish();
+    } else if (reading.mode == LiveShotDetector.Mode.PUTT) {
+      // Stop capture before presenting results so queued frames cannot create another result.
+      if (camera != null) {
+        camera.close();
+        camera = null;
+      }
+      startActivity(PuttResultActivity.intent(this, reading, type));
     }
   }
 
