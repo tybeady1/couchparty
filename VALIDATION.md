@@ -51,3 +51,5 @@ Updater (1.1.0/build 2): model tests, local TLS download/redirect/hash/error tes
 1.2.0: putt result screen inspected in API34 emulator using injected sample metrics (not a measured physical putt). Model tests and direct/Gradle builds with lint pass. Result includes camera-relative heading, trace, speed, observed segment distance and explicit unmeasured rollout. Real-camera transition and physical-phone behavior still need field verification.
 
 1.3.0: calibration model tests cover quadratic speed scaling, odd/even median, invalid/nonfinite input, observed-distance bound and missing calibration. Emulator UI with synthetic 1.25 m/s test input saved a measured 2.5 m sample and showed 2.50 m estimated rollout with a calibration/self-fit label. This is a UI/math check, not physical validation. Direct/Gradle builds and lint passed.
+
+1.4.0: speed-ratio/angle-offset model tests and existing detector/game/protocol tests pass. Swing result and reference-entry dialog opened in emulator with synthetic inputs. Full physical reference-monitor calibration and simulator playback need field verification.

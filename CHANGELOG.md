@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0 (build 5)
+
+- Pair captured swings with reference ball speed and vertical launch angle.
+- Apply a median speed multiplier and angle offset to future live swings, games and native simulator output. Raw history and raw JSON remain unchanged.
+- Review/edit up to ten same-shot pairs per ball type, disable or reset corrections, and reopen live swing history for calibration.
+
 ## 1.3.0 (build 4)
 
 - Calibrate your putting mat from measured natural stopping distances, in metres or feet.

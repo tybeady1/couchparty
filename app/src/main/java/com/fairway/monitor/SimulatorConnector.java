@@ -54,11 +54,16 @@ public final class SimulatorConnector {
               reading.angle,
               ball);
       SimProtocol.Target target = SimProtocol.Target.from(p.getString("target", "RAW"));
+      String raw = SimProtocol.encode(SimProtocol.Target.RAW, r, assumptions(p));
+      if (reading.mode == LiveShotDetector.Mode.SWING && target != SimProtocol.Target.RAW) {
+        double[] corrected = SwingProfiles.correct(c, ball, reading.speed, reading.angle);
+        if (corrected[2] > 0)
+          r =
+              new SimProtocol.Reading(
+                  number, System.currentTimeMillis(), false, corrected[0], corrected[1], ball);
+      }
       String payload = SimProtocol.encode(target, r, assumptions(p));
-      p.edit()
-          .putString("last_payload", payload)
-          .putString("last_raw", SimProtocol.encode(SimProtocol.Target.RAW, r, assumptions(p)))
-          .apply();
+      p.edit().putString("last_payload", payload).putString("last_raw", raw).apply();
       send(c, target, payload, false);
     } catch (IllegalArgumentException e) {
       status(c, e.getMessage(), true);

@@ -360,6 +360,11 @@ public class LiveCameraActivity extends Activity {
   }
 
   private void captured(LiveShotDetector.Reading reading, BallType type, double width) {
+    String shotId = java.util.UUID.randomUUID().toString();
+    double[] corrected =
+        reading.mode == LiveShotDetector.Mode.SWING
+            ? SwingProfiles.correct(this, type, reading.speed, reading.angle)
+            : new double[] {reading.speed, reading.angle, 0};
     SimulatorConnector.publish(this, reading, type);
     String report =
         String.format(
@@ -382,9 +387,14 @@ public class LiveCameraActivity extends Activity {
               reading.observedDistance,
               reading.observedDistance * 3.28084);
     }
+    if (corrected[2] > 0)
+      report +=
+          String.format(
+              Locale.US, "\nCalibrated estimate: %.2f m/s · %.1f°", corrected[0], corrected[1]);
     result.setText(report);
     try {
       JSONObject j = new JSONObject();
+      j.put("id", shotId);
       j.put("time", System.currentTimeMillis());
       j.put("mode", reading.mode.name());
       j.put("ballType", type.label);
@@ -406,8 +416,8 @@ public class LiveCameraActivity extends Activity {
     }
     if (getIntent().getBooleanExtra("gameInput", false)) {
       Intent data = new Intent();
-      data.putExtra("speed", reading.speed);
-      data.putExtra("angle", reading.angle);
+      data.putExtra("speed", corrected[0]);
+      data.putExtra("angle", corrected[1]);
       data.putExtra("putting", reading.mode == LiveShotDetector.Mode.PUTT);
       data.putExtra("ballType", type.label);
       setResult(RESULT_OK, data);
@@ -419,24 +429,57 @@ public class LiveCameraActivity extends Activity {
         camera = null;
       }
       startActivity(PuttResultActivity.intent(this, reading, type));
+    } else {
+      if (camera != null) {
+        camera.close();
+        camera = null;
+      }
+      startActivity(SwingResultActivity.intent(this, shotId, reading.speed, reading.angle, type));
     }
   }
 
   private void showHistory() {
-    StringBuilder s = new StringBuilder();
-    for (int i = history.length() - 1; i >= 0; i--) {
-      JSONObject j = history.optJSONObject(i);
-      s.append(
-              new java.text.SimpleDateFormat("MMM d, h:mm:ss a", Locale.getDefault())
-                  .format(new Date(j.optLong("time"))))
-          .append('\n')
-          .append(j.optString("report"))
-          .append("\n\n");
+    if (history.length() == 0) {
+      new AlertDialog.Builder(this)
+          .setTitle("Live readings")
+          .setMessage("No live shots captured yet.")
+          .setPositiveButton("Close", null)
+          .show();
+      return;
+    }
+    String[] labels = new String[history.length()];
+    for (int n = 0; n < labels.length; n++) {
+      JSONObject j = history.optJSONObject(history.length() - 1 - n);
+      labels[n] =
+          new java.text.SimpleDateFormat("MMM d, h:mm:ss a", Locale.getDefault())
+                  .format(new Date(j.optLong("time")))
+              + " · "
+              + j.optString("mode")
+              + " · "
+              + j.optString("ballType");
     }
     new AlertDialog.Builder(this)
-        .setTitle("Live readings · " + history.length())
-        .setMessage(s.length() == 0 ? "No live shots captured yet." : s.toString())
-        .setPositiveButton("Close", null)
+        .setTitle("Live readings · select to review")
+        .setItems(
+            labels,
+            (d, n) -> {
+              JSONObject j = history.optJSONObject(history.length() - 1 - n);
+              if ("SWING".equals(j.optString("mode")))
+                startActivity(
+                    SwingResultActivity.intent(
+                        this,
+                        j.optString("id", "legacy-" + j.optLong("time")),
+                        j.optDouble("speed_mps"),
+                        j.optDouble("angle_deg"),
+                        BallType.from(j.optString("ballType"))));
+              else
+                new AlertDialog.Builder(this)
+                    .setTitle("Putt reading")
+                    .setMessage(j.optString("report"))
+                    .setPositiveButton("Close", null)
+                    .show();
+            })
+        .setNegativeButton("Close", null)
         .show();
   }
 
