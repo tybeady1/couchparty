@@ -567,6 +567,12 @@ public class MainActivity extends Activity {
             false,
             () -> startActivity(new Intent(this, IntegrationActivity.class))));
     gap(content, 15);
+    content.addView(
+        button(
+            "App version & updates",
+            false,
+            () -> startActivity(new Intent(this, UpdateActivity.class))));
+    gap(content, 15);
     LinearLayout balls = card();
     balls.addView(text("Ball type", 18, TEXT));
     gap(balls, 10);

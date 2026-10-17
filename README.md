@@ -42,3 +42,6 @@ The APK is debug signed for local testing. Android Studio can open this director
 ```
 
 Source is in `app/src/main/java/com/fairway/monitor/`. `LiveShotDetector` and `BallTracker` provide camera tracking; `Shot` handles practice metrics; `MainActivity` owns sessions/settings. `GolfGame` provides deterministic arcade rules, `GolfRenderer` draws bundled meshes, and `GameActivity` supplies controls and live-camera handoff. Simulator adapter details and tests live in `integrations/`.
+
+## Versions and app updates
+Version numbers come from version.properties. Settings > App version & updates checks the configured HTTPS release feed, downloads a newer APK and opens Android's installer. See [release and signing instructions](docs/updates.md). Run scripts/test-updates.ps1 for local HTTPS transport checks. Git ignores signing keys, recordings and build artifacts.

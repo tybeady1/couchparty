@@ -1,4 +1,7 @@
+import java.util.Properties
+
 plugins { id("com.android.application") }
+val releaseVersion = Properties().apply { rootProject.file("version.properties").inputStream().use { load(it) } }
 android {
     namespace = "com.fairway.monitor"
     compileSdk = 34
@@ -6,8 +9,16 @@ android {
         applicationId = "com.fairway.monitor"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = releaseVersion.getProperty("versionCode").toInt()
+        versionName = releaseVersion.getProperty("versionName")
+    }
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file(".signing/fairway.jks")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
