@@ -1,0 +1,13 @@
+.gradle/
+build/
+app/build/
+local.properties
+*.jks
+.idea/
+*.iml
+
+.signing/
+*.keystore
+*.mp4
+*.gray
+release-output/

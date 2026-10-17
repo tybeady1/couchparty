@@ -1,0 +1,90 @@
+{
+  "ball-blue": {
+    "vertices": 3432,
+    "bounds": [
+      0.06994324,
+      0.06969587,
+      0.06994324
+    ]
+  },
+  "flag-red": {
+    "vertices": 516,
+    "bounds": [
+      0.3955524,
+      1.024895,
+      0.078064
+    ]
+  },
+  "flag-blue": {
+    "vertices": 516,
+    "bounds": [
+      0.3955524,
+      1.024895,
+      0.078064
+    ]
+  },
+  "flag-green": {
+    "vertices": 516,
+    "bounds": [
+      0.3955524,
+      1.024895,
+      0.078064
+    ]
+  },
+  "castle": {
+    "vertices": 1080,
+    "bounds": [
+      0.9999,
+      0.6510286,
+      0.9999
+    ]
+  },
+  "structure-windmill": {
+    "vertices": 1038,
+    "bounds": [
+      1.204439,
+      1.495541,
+      0.9415798
+    ]
+  },
+  "windmill": {
+    "vertices": 1182,
+    "bounds": [
+      1.204439,
+      1.558868,
+      0.9999
+    ]
+  },
+  "obstacle-block": {
+    "vertices": 300,
+    "bounds": [
+      0.9999,
+      0.146652,
+      0.9999
+    ]
+  },
+  "obstacle-diamond": {
+    "vertices": 204,
+    "bounds": [
+      0.9999,
+      0.146652,
+      0.9999
+    ]
+  },
+  "structure-gate": {
+    "vertices": 264,
+    "bounds": [
+      0.79992,
+      0.23331,
+      0.79992
+    ]
+  },
+  "open": {
+    "vertices": 72,
+    "bounds": [
+      0.9999,
+      0.063327,
+      0.9999
+    ]
+  }
+}

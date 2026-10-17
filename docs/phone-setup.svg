@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#cbf078"/></marker></defs>
+<rect width="1400" height="1000" rx="28" fill="#101a18"/>
+<g font-family="Arial, sans-serif" fill="#f2f5eb">
+<text x="60" y="80" font-size="46" font-weight="bold">fairway <tspan fill="#cbf078">/</tspan> Phone setup</text>
+<text x="60" y="120" font-size="22" fill="#9daea0">Fix the phone in place. Calibrate the visible width. Tap the ball. Wait for READY.</text>
+<rect x="40" y="160" width="640" height="690" rx="24" fill="#1b2823"/>
+<rect x="720" y="160" width="640" height="690" rx="24" fill="#1b2823"/>
+<text x="75" y="210" fill="#cbf078" font-size="18" letter-spacing="2">01 / FULL SWING</text>
+<text x="75" y="247" font-size="26" font-weight="bold">Side-on phone placement</text>
+<text x="75" y="277" fill="#9daea0" font-size="18">Diagram viewed from above</text>
+<path d="M360,510 L140,350 L580,350 Z" fill="#2a4733"/>
+<path d="M125,350 H590" stroke="#cbf078" stroke-width="4" marker-end="url(#arrow)"/>
+<circle cx="160" cy="350" r="12" fill="white"/>
+<text x="270" y="326" font-size="20">Ball flight / shot line</text>
+<path d="M360,480 V365" stroke="#9daea0" stroke-width="3" stroke-dasharray="7 6"/>
+<path d="M360,350 V374 H384" fill="none" stroke="#9daea0" stroke-width="2"/>
+<text x="391" y="387" fill="#9daea0" font-size="18">90°</text>
+<rect x="318" y="490" width="84" height="48" rx="9" fill="#cbf078"/>
+<circle cx="333" cy="504" r="6" fill="#101a18"/>
+<text x="419" y="520" font-size="20">Phone on tripod</text>
+<path d="M140,416 H580 M140,406 V426 M580,406 V426" stroke="#9daea0" stroke-width="2"/>
+<text x="180" y="445" font-size="17">Measure visible width at ball plane</text>
+<text x="75" y="597" font-size="21" font-weight="bold">Level lens, at ball height</text>
+<text x="75" y="633" font-size="19" fill="#9daea0">Keep the lens perpendicular to the shot line.</text>
+<text x="75" y="665" font-size="19" fill="#9daea0">Leave room in-frame for the ball after impact.</text>
+<text x="75" y="697" font-size="19" fill="#9daea0">Use bright light and a darker background.</text>
+<text x="75" y="754" font-size="18" fill="#cbf078">Fast shots can outrun a 30–60 fps camera.</text>
+<text x="75" y="784" font-size="18" fill="#9daea0">Incomplete tracks produce no reading.</text>
+<text x="755" y="210" fill="#cbf078" font-size="18" letter-spacing="2">02 / INDOOR PUTTING</text>
+<text x="755" y="247" font-size="26" font-weight="bold">Phone directly above the mat</text>
+<text x="755" y="277" fill="#9daea0" font-size="18">Diagram viewed from the side</text>
+<path d="M1040,345 L810,505 L1270,505 Z" fill="#2a4733"/>
+<rect x="998" y="317" width="84" height="48" rx="9" fill="#cbf078"/>
+<circle cx="1013" cy="349" r="6" fill="#101a18"/>
+<text x="1100" y="347" font-size="19">Secure overhead mount</text>
+<path d="M1040,377 V455" stroke="#cbf078" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="805" y="412" font-size="18" fill="#9daea0">Lens points down</text>
+<rect x="790" y="507" width="500" height="20" rx="5" fill="#49664c"/>
+<circle cx="830" cy="494" r="12" fill="white"/>
+<path d="M855,494 H1260" stroke="#cbf078" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1100" y="475" font-size="19">Ball rolls</text>
+<path d="M810,551 H1270 M810,541 V561 M1270,541 V561" stroke="#9daea0" stroke-width="2"/>
+<text x="862" y="580" font-size="17">Measure visible width on the mat</text>
+<text x="755" y="633" font-size="19" fill="#9daea0">Keep the camera level and pointing straight down.</text>
+<text x="755" y="665" font-size="19" fill="#9daea0">Align the putt line horizontally in the live view.</text>
+<text x="755" y="697" font-size="19" fill="#9daea0">Tap a stationary, light-colored ball to lock on.</text>
+<text x="755" y="754" font-size="18" fill="#cbf078">Wait for READY, then putt normally.</text>
+<text x="755" y="784" font-size="18" fill="#9daea0">Replace the ball at the target to re-arm.</text>
+<text x="60" y="902" font-size="23" font-weight="bold">Calibration = full visible image width at the ball’s plane, in metres.</text>
+<text x="60" y="940" font-size="20" fill="#9daea0">Exclude black borders. Recalibrate after moving the phone. Camera-to-ball distance is not the calibration.</text>
+<text x="60" y="974" font-size="18" fill="#9daea0">Experimental image-plane estimates. Ball type labels actual readings; foam/wiffle speeds are not converted to golf-ball performance.</text>
+</g></svg>
