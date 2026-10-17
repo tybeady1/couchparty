@@ -45,3 +45,5 @@ Source is in `app/src/main/java/com/fairway/monitor/`. `LiveShotDetector` and `B
 
 ## Versions and app updates
 Version numbers come from version.properties. Settings > App version & updates checks the configured HTTPS release feed, downloads a newer APK and opens Android's installer. See [release and signing instructions](docs/updates.md). Run scripts/test-updates.ps1 for local HTTPS transport checks. Git ignores signing keys, recordings and build artifacts.
+
+Download the latest phone build from [GitHub Releases](https://github.com/tybeady1/couchparty/releases/latest). Install 1.1.0 manually once to enable subsequent in-app updates.
