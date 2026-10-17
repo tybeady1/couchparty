@@ -47,3 +47,9 @@ Source is in `app/src/main/java/com/fairway/monitor/`. `LiveShotDetector` and `B
 Version numbers come from version.properties. Settings > App version & updates checks the configured HTTPS release feed, downloads a newer APK and opens Android's installer. See [release and signing instructions](docs/updates.md). Run scripts/test-updates.ps1 for local HTTPS transport checks. Git ignores signing keys, recordings and build artifacts.
 
 Download the latest phone build from [GitHub Releases](https://github.com/tybeady1/couchparty/releases/latest). Install 1.1.0 manually once to enable subsequent in-app updates.
+
+## Putting mat calibration
+
+After a practice putt, scroll to Estimated full rollout and choose Calibrate mat with this putt. Let the ball stop naturally, then enter the measured distance from its starting position to its resting position (metres or feet). Confirm that it did not hit a wall, rail, cup or mat edge. Repeat with at least three different putts/speeds. Profiles are stored locally per ball type for one current mat; reset when the surface or conditions change. Editing one putt replaces its sample rather than counting it twice. Up to ten samples are retained.
+
+The empirical model uses the median of measured stopping distance divided by camera speed squared, then multiplies it by the new putt speed squared. Because camera speed is averaged over an early segment, this is a surface-specific empirical estimate, not a measurement of true initial speed or physical friction. The estimate is total start-to-stop distance, not remaining distance. Level surface, consistent direction and ball type are assumed. Off-mat stops and impacts must not be used for calibration.

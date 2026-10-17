@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0 (build 4)
+
+- Calibrate your putting mat from measured natural stopping distances, in metres or feet.
+- Show estimated full rollout separately from the observed camera segment.
+- Keep up to 10 distinct calibration putts per ball type, with edit/reset controls and out-of-range speed labels.
+
 ## 1.2.0 (build 3)
 
 - Show an automatic results screen after a practice putt: camera-relative heading, observed trace, speed, observed distance and track details.

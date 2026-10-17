@@ -1,6 +1,7 @@
 package com.fairway.monitor;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.*;
 import android.graphics.*;
 import android.graphics.drawable.GradientDrawable;
@@ -8,8 +9,9 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 import java.util.Locale;
+import org.json.*;
 
-/** Results use only the short, observed camera segment, never inferred total rollout. */
+/** Measured camera statistics plus a separately labeled, surface-calibrated rollout estimate. */
 public class PuttResultActivity extends Activity {
   private static final int BG = 0xff101a18,
       PANEL = 0xff1b2823,
@@ -35,6 +37,9 @@ public class PuttResultActivity extends Activity {
     i.putExtra("duration", (reading.path.get(count).ns - reading.path.get(1).ns) / 1e9);
     return i;
   }
+
+  private LinearLayout rollout;
+  private String profileKey, shotId;
 
   private int dp(int n) {
     return Math.round(n * getResources().getDisplayMetrics().density);
@@ -67,6 +72,12 @@ public class PuttResultActivity extends Activity {
   public void onCreate(Bundle saved) {
     super.onCreate(saved);
     Intent i = getIntent();
+    profileKey = "matRollout_" + BallType.from(i.getStringExtra("ball")).name();
+    shotId = i.getStringExtra("shotId");
+    if (shotId == null) {
+      shotId = java.util.UUID.randomUUID().toString();
+      i.putExtra("shotId", shotId);
+    }
     float[] path = i.getFloatArrayExtra("path");
     if (path == null || path.length < 4) {
       finish();
@@ -112,12 +123,10 @@ public class PuttResultActivity extends Activity {
             Locale.US,
             "%.2f ft · straight-line travel during the tracked segment",
             distance * 3.28084));
-    card(
-        body,
-        "FULL ROLLOUT DISTANCE",
-        "Not measured",
-        "Capture finishes before the ball stops. Observed distance is only a short part of your"
-            + " putt.");
+    rollout = new LinearLayout(this);
+    rollout.setOrientation(LinearLayout.VERTICAL);
+    body.addView(rollout);
+    refreshRollout();
     card(
         body,
         "TRACK DETAILS",
@@ -134,6 +143,167 @@ public class PuttResultActivity extends Activity {
                 + " the ball at the selected target and wait for READY.",
             14,
             MUTED));
+  }
+
+  private JSONArray samples() {
+    try {
+      return new JSONArray(getSharedPreferences("fairway", 0).getString(profileKey, "[]"));
+    } catch (JSONException e) {
+      return new JSONArray();
+    }
+  }
+
+  private void refreshRollout() {
+    rollout.removeAllViews();
+    JSONArray samples = samples();
+    double[] coefficients = new double[samples.length()];
+    double min = Double.POSITIVE_INFINITY, max = 0;
+    boolean includesThis = false;
+    for (int n = 0; n < samples.length(); n++) {
+      JSONObject sample = samples.optJSONObject(n);
+      if (sample == null) {
+        coefficients[n] = Double.NaN;
+        continue;
+      }
+      coefficients[n] = sample.optDouble("coefficient", Double.NaN);
+      min = Math.min(min, sample.optDouble("speed", 0));
+      max = Math.max(max, sample.optDouble("speed", 0));
+      includesThis |= shotId.equals(sample.optString("shotId"));
+    }
+    double speed = getIntent().getDoubleExtra("speed", 0);
+    double estimate = RolloutCalibration.estimate(speed, coefficients);
+    String note = "Calibrate this mat and ball type using a putt that rolls to a natural stop.";
+    if (Double.isFinite(estimate)) {
+      note =
+          String.format(
+              Locale.US,
+              "%.2f ft · %d calibration putt%s · %s",
+              estimate * 3.28084,
+              samples.length(),
+              samples.length() == 1 ? "" : "s",
+              getIntent().getStringExtra("ball"));
+      note +=
+          samples.length() < 3
+              ? "\nPreliminary: add at least 3 putts at different speeds."
+              : "\nPrediction for the same level mat and ball type; not a measured stopping point.";
+      if (speed < min * .9 || speed > max * 1.1)
+        note += "\nThis speed is outside your calibration range.";
+      if (includesThis)
+        note +=
+            "\nThis putt is included in calibration, so this is not an independent accuracy check.";
+    }
+    card(
+        rollout,
+        "ESTIMATED FULL ROLLOUT",
+        Double.isFinite(estimate) ? String.format(Locale.US, "%.2f m", estimate) : "Calibrate mat",
+        note);
+    Button calibrate = new Button(this);
+    calibrate.setText(
+        includesThis ? "Edit this putt’s calibration" : "Calibrate mat with this putt");
+    calibrate.setOnClickListener(v -> calibrate());
+    rollout.addView(calibrate);
+    if (samples.length() > 0) {
+      Button reset = new Button(this);
+      reset.setText("Reset mat calibration · this ball type");
+      reset.setOnClickListener(
+          v ->
+              new AlertDialog.Builder(this)
+                  .setTitle("Reset this mat calibration?")
+                  .setMessage(
+                      "Remove calibration putts for "
+                          + getIntent().getStringExtra("ball")
+                          + ". Other ball types and shot history stay saved.")
+                  .setNegativeButton("Cancel", null)
+                  .setPositiveButton(
+                      "Reset",
+                      (d, w) -> {
+                        getSharedPreferences("fairway", 0).edit().remove(profileKey).apply();
+                        refreshRollout();
+                      })
+                  .show());
+      rollout.addView(reset);
+    }
+  }
+
+  private void calibrate() {
+    LinearLayout form = new LinearLayout(this);
+    form.setOrientation(LinearLayout.VERTICAL);
+    form.setPadding(dp(20), dp(8), dp(20), 0);
+    form.addView(
+        text(
+            "Let this putt stop naturally. Measure from the ball’s starting position to its final"
+                + " resting position. Do not use a putt that hit a wall, rail, cup or the end of"
+                + " the mat.\n\n"
+                + "Use the same level mat, direction and ball type. Reset calibration if the"
+                + " surface changes. Up to 10 distinct putts are retained.",
+            15,
+            MUTED));
+    EditText distance = new EditText(this);
+    distance.setHint("Measured total stopping distance");
+    distance.setInputType(
+        android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+    form.addView(distance);
+    Spinner units = new Spinner(this);
+    units.setAdapter(
+        new ArrayAdapter<String>(
+            this, android.R.layout.simple_spinner_dropdown_item, new String[] {"Metres", "Feet"}));
+    form.addView(units);
+    CheckBox natural = new CheckBox(this);
+    natural.setText("The ball stopped naturally on the mat");
+    form.addView(natural);
+    AlertDialog dialog =
+        new AlertDialog.Builder(this)
+            .setTitle("Calibrate putting mat")
+            .setView(form)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Save calibration", null)
+            .create();
+    dialog.setOnShowListener(
+        d ->
+            dialog
+                .getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(
+                    v -> {
+                      if (!natural.isChecked()) {
+                        natural.setError("Only use a natural stop");
+                        return;
+                      }
+                      try {
+                        double metres =
+                            Double.parseDouble(
+                                    distance.getText().toString().trim().replace(',', '.'))
+                                * (units.getSelectedItemPosition() == 1 ? .3048 : 1);
+                        double speed = getIntent().getDoubleExtra("speed", 0);
+                        double coefficient =
+                            RolloutCalibration.coefficient(
+                                speed, metres, getIntent().getDoubleExtra("distance", 0));
+                        JSONArray old = samples(), updated = new JSONArray();
+                        for (int n = 0; n < old.length(); n++) {
+                          JSONObject sample = old.optJSONObject(n);
+                          if (sample != null && !shotId.equals(sample.optString("shotId")))
+                            updated.put(sample);
+                        }
+                        while (updated.length() >= 10) updated.remove(0);
+                        JSONObject sample = new JSONObject();
+                        sample.put("shotId", shotId);
+                        sample.put("speed", speed);
+                        sample.put("distance", metres);
+                        sample.put("coefficient", coefficient);
+                        updated.put(sample);
+                        getSharedPreferences("fairway", 0)
+                            .edit()
+                            .putString(profileKey, updated.toString())
+                            .apply();
+                        refreshRollout();
+                        dialog.dismiss();
+                      } catch (Exception error) {
+                        distance.setError(
+                            error instanceof NumberFormatException
+                                ? "Enter a measured distance"
+                                : error.getMessage());
+                      }
+                    }));
+    dialog.show();
   }
 
   private final class PathView extends View {

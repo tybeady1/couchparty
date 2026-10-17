@@ -2,11 +2,11 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 Push-Location $root
 try {
-    $modelSources = @('BallType','Shot','BallTracker','LiveShotDetector','GolfGame') | ForEach-Object { "app/src/main/java/com/fairway/monitor/$_.java" }
+    $modelSources = @('BallType','Shot','BallTracker','LiveShotDetector','GolfGame','RolloutCalibration') | ForEach-Object { "app/src/main/java/com/fairway/monitor/$_.java" }
     $testSources = @(Get-ChildItem tests -Filter '*Test.java' | Where-Object { $_.Name -ne 'UpdateDownloadTest.java' } | ForEach-Object FullName)
     & javac -d build/tests @modelSources @testSources
     if ($LASTEXITCODE -ne 0) { throw 'Test compilation failed.' }
-    foreach ($test in @('ShotTest','BallTrackerTest','LiveShotDetectorTest','GolfGameTest')) {
+    foreach ($test in @('ShotTest','BallTrackerTest','LiveShotDetectorTest','GolfGameTest','RolloutCalibrationTest')) {
         & java -cp build/tests $test
         if ($LASTEXITCODE -ne 0) { throw "$test failed." }
     }
